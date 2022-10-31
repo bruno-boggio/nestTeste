@@ -1,32 +1,44 @@
-import { Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Res } from '@nestjs/common';
-import { response } from 'express';
-
-@Controller('courses')
-export class CoursesController {
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Res,
+  } from '@nestjs/common';
+import { CoursesService } from './courses.service';
+import { CreateCourseDto } from './dto/create-course.dto';
+import { UpdateCourseDto } from './dto/update-course.dto';
+   
+  @Controller('courses')
+  export class CoursesController {
+    constructor(private readonly coursesService: CoursesService){}
 
     @Get()
-    findAll(@Res() response){
-        return response.status(200).send('Listagem de cursosss')
+    findAll() {
+      return this.coursesService.findAll();
     }
-
+   
     @Get(':id')
-    findOne(@Param('id') id:string)
-    {
-        return `Curso #${id}`
+    findOne(@Param('id') id: string) {
+      return this.coursesService.findOne(id)
     }
-
+   
     @Post()
-    create(@Body('name') body) {
-        return body;
-       }
-
-    @Patch(':id')
-    update(@Param('id') id:string, @Body() body) {
-        return `Atualização do curso #${id}`
+    create(@Body() CreateCourseDto: CreateCourseDto) {
+      return this.coursesService.create(CreateCourseDto);
     }
-
+   
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
+      return this.coursesService.update(id, updateCourseDto);
+    }
+   
     @Delete(':id')
-  remove(@Param('id') id: string) {
-    return `Exclusao do Curso #${id}`;
+    remove(@Param('id') id: string) {
+      return this.coursesService.remove(id);
+    }
   }
-}
+  
